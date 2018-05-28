@@ -1,8 +1,10 @@
 package com.example.restapi.demo.exceptionhandler;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -46,6 +48,14 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         String detailMessage = ex.toString();
         List<Error> errors = Arrays.asList(new Error(errorMessage, detailMessage));
         return handleExceptionInternal(ex, errors, HttpHeaders.EMPTY, HttpStatus.NOT_FOUND, request);
+    }
+
+    @ExceptionHandler({DataIntegrityViolationException.class})
+    public ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException ex, WebRequest request) {
+        String errorMessage = messageSource.getMessage("resource.operation-not-allowed", null, LocaleContextHolder.getLocale());
+        String detailMessage = ExceptionUtils.getRootCauseMessage(ex);
+        List<Error> errors = Arrays.asList(new Error(errorMessage, detailMessage));
+        return handleExceptionInternal(ex, errors, HttpHeaders.EMPTY, HttpStatus.BAD_REQUEST, request);
     }
 
     private List<Error> createErrorList(BindingResult bindingResult) {
