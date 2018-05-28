@@ -17,7 +17,7 @@ public class CreatedResourceListener implements ApplicationListener<CreatedResou
         HttpServletResponse response = createdResourceEvent.getResponse();
 
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}")
-                .buildAndExpand(resourceId).toUri();
+            .buildAndExpand(resourceId).toUri();
 
         response.setHeader("Location", uri.toASCIIString());
     }
