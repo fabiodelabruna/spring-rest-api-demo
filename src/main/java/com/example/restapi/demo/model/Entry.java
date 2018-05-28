@@ -1,6 +1,7 @@
 package com.example.restapi.demo.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -12,24 +13,30 @@ public class Entry {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     private String description;
 
+    @NotNull
     @Column(name = "due_date")
     private LocalDate dueDate;
 
     private LocalDate payday;
 
+    @NotNull
     private BigDecimal value;
 
     private String observation;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     private EntryType type;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "person_id")
     private Person person;
