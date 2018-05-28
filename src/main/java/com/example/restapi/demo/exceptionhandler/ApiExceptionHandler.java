@@ -1,5 +1,6 @@
 package com.example.restapi.demo.exceptionhandler;
 
+import com.example.restapi.demo.service.exception.NonExistentOrInactivePersonException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -50,8 +51,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, errors, HttpHeaders.EMPTY, HttpStatus.NOT_FOUND, request);
     }
 
-    @ExceptionHandler({DataIntegrityViolationException.class})
-    public ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException ex, WebRequest request) {
+    @ExceptionHandler({NonExistentOrInactivePersonException.class})
+    public ResponseEntity<Object> handleNonExistentOrInactivePersonException(DataIntegrityViolationException ex, WebRequest request) {
         String errorMessage = messageSource.getMessage("resource.operation-not-allowed", null, LocaleContextHolder.getLocale());
         String detailMessage = ExceptionUtils.getRootCauseMessage(ex);
         List<Error> errors = Arrays.asList(new Error(errorMessage, detailMessage));
@@ -70,7 +71,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return errors;
     }
 
-    class Error {
+    public static class Error {
 
         private String errorMessage;
         private String detailMessage;

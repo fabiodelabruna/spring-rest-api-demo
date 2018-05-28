@@ -27,7 +27,7 @@ public class PersonService {
         personRepository.save(storedPerson);
     }
 
-    private Person findPersonById(Long id) {
+    public Person findPersonById(Long id) {
         Optional<Person> optionalPerson = personRepository.findById(id);
 
         if (!optionalPerson.isPresent()) {
