@@ -30,7 +30,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         String errorMessage = messageSource.getMessage("message.invalid", null, LocaleContextHolder.getLocale());
-        String detailMessage = ex.getCause().toString();
+        String detailMessage = ex.getCause() != null ? ex.getCause().toString() : ex.toString();
         List<Error> errors = Arrays.asList(new Error(errorMessage, detailMessage));
         return handleExceptionInternal(ex, errors, headers, HttpStatus.BAD_REQUEST, request);
     }
