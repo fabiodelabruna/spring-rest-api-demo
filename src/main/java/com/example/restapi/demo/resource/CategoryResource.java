@@ -3,6 +3,7 @@ package com.example.restapi.demo.resource;
 import com.example.restapi.demo.event.CreatedResourceEvent;
 import com.example.restapi.demo.model.Category;
 import com.example.restapi.demo.repository.CategoryRepository;
+import com.example.restapi.demo.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,9 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/category")
 public class CategoryResource {
+
+    @Autowired
+    private CategoryService categoryService;
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -46,6 +50,11 @@ public class CategoryResource {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void remove(@PathVariable Long id) {
         categoryRepository.deleteById(id);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Category> update(@PathVariable Long id, @Valid @RequestBody Category category) {
+        return ResponseEntity.ok(categoryService.update(id, category));
     }
 
 }

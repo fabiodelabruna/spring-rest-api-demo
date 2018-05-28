@@ -3,8 +3,11 @@ package com.example.restapi.demo.resource;
 import com.example.restapi.demo.event.CreatedResourceEvent;
 import com.example.restapi.demo.model.Person;
 import com.example.restapi.demo.repository.PersonRepository;
+import com.example.restapi.demo.service.PersonService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +20,9 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/person")
 public class PersonResource {
+
+    @Autowired
+    private PersonService personService;
 
     @Autowired
     private PersonRepository personRepository;
@@ -46,6 +52,11 @@ public class PersonResource {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void remove(@PathVariable Long id) {
         personRepository.deleteById(id);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Person> update(@PathVariable Long id, @Valid @RequestBody Person person) {
+        return ResponseEntity.ok(personService.update(id, person));
     }
 
 }
