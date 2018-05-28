@@ -42,4 +42,10 @@ public class CategoryResource {
         return ResponseEntity.status(HttpStatus.CREATED).body(storedCategory);
     }
 
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void remove(@PathVariable Long id) {
+        categoryRepository.deleteById(id);
+    }
+
 }

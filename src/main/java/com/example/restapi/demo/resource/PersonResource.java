@@ -34,11 +34,18 @@ public class PersonResource {
         Optional<Person> person = personRepository.findById(id);
         return person.isPresent() ? ResponseEntity.ok(person.get()) : ResponseEntity.notFound().build();
     }
+
     @PostMapping
     public ResponseEntity<Person> create(@Valid @RequestBody Person person, HttpServletResponse response) {
         Person storedPerson = personRepository.save(person);
         publisher.publishEvent(new CreatedResourceEvent(this, response, storedPerson.getId()));
         return ResponseEntity.status(HttpStatus.CREATED).body(storedPerson);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void remove(@PathVariable Long id) {
+        personRepository.deleteById(id);
     }
 
 }
