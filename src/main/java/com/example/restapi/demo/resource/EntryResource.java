@@ -4,6 +4,7 @@ import com.example.restapi.demo.event.CreatedResourceEvent;
 import com.example.restapi.demo.exceptionhandler.ApiExceptionHandler;
 import com.example.restapi.demo.model.Entry;
 import com.example.restapi.demo.repository.EntryRepository;
+import com.example.restapi.demo.repository.filter.EntryFilter;
 import com.example.restapi.demo.service.EntryService;
 import com.example.restapi.demo.service.exception.NonExistentOrInactivePersonException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +38,8 @@ public class EntryResource {
     private ApplicationEventPublisher publisher;
 
     @GetMapping
-    public List<Entry> findAll() {
-        return entryRepository.findAll();
+    public List<Entry> search(EntryFilter filter) {
+        return entryRepository.search(filter);
     }
 
     @GetMapping("/{id}")
