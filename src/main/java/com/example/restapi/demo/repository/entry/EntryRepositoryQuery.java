@@ -2,11 +2,11 @@ package com.example.restapi.demo.repository.entry;
 
 import com.example.restapi.demo.model.Entry;
 import com.example.restapi.demo.repository.filter.EntryFilter;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface EntryRepositoryQuery {
 
-    List<Entry> search(EntryFilter filter);
+    Page<Entry> search(EntryFilter filter, Pageable pageable);
 
 }

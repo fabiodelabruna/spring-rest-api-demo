@@ -2,6 +2,9 @@ package com.example.restapi.demo.repository.filter;
 
 import com.example.restapi.demo.model.Entry;
 import com.example.restapi.demo.repository.entry.EntryRepositoryQuery;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
@@ -20,7 +23,7 @@ public class EntryRepositoryImpl implements EntryRepositoryQuery {
     private EntityManager manager;
 
     @Override
-    public List<Entry> search(EntryFilter filter) {
+    public Page<Entry> search(EntryFilter filter, Pageable pageable) {
         CriteriaBuilder builder = manager.getCriteriaBuilder();
         CriteriaQuery<Entry> criteria = builder.createQuery(Entry.class);
         Root<Entry> root = criteria.from(Entry.class);
@@ -29,8 +32,11 @@ public class EntryRepositoryImpl implements EntryRepositoryQuery {
         criteria.where(predicates);
 
         TypedQuery<Entry> query = manager.createQuery(criteria);
-        return query.getResultList();
+        createPaginationRestrictions(query, pageable);
+
+        return new PageImpl<>(query.getResultList(), pageable, count(filter));
     }
+
 
     private Predicate[] createRestictions(EntryFilter filter, CriteriaBuilder builder, Root<Entry> root) {
         List<Predicate> predicates = new ArrayList<>();
@@ -50,6 +56,22 @@ public class EntryRepositoryImpl implements EntryRepositoryQuery {
         }
 
         return predicates.toArray(new Predicate[predicates.size()]);
+    }
+
+    private void createPaginationRestrictions(TypedQuery<Entry> query, Pageable pageable) {
+        query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
+        query.setMaxResults(pageable.getPageSize());
+    }
+
+    private Long count(EntryFilter filter) {
+        CriteriaBuilder builder = manager.getCriteriaBuilder();
+        CriteriaQuery<Long> criteria = builder.createQuery(Long.class);
+        Root<Entry> root = criteria.from(Entry.class);
+
+        criteria.where(createRestictions(filter, builder, root));
+        criteria.select(builder.count(root));
+
+        return manager.createQuery(criteria).getSingleResult();
     }
 
 }
