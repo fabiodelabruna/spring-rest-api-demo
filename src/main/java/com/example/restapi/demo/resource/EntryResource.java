@@ -48,6 +48,12 @@ public class EntryResource {
         return entry.isPresent() ? ResponseEntity.ok(entry.get()) : ResponseEntity.notFound().build();
     }
 
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void remove(@PathVariable Long id) {
+        entryRepository.deleteById(id);
+    }
+
     @PostMapping
     public ResponseEntity<Entry> create(@Valid @RequestBody Entry entry, HttpServletResponse response) {
         Entry storedEntry = entryService.save(entry);
